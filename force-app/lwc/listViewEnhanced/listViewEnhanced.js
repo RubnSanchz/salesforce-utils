@@ -1,5 +1,5 @@
 /**
- * @class name        : rep_lwc_listViewEnhanced.js
+ * @class name        : ListViewEnhanced.js
  * @description       : Muestra una lista mejorada de registros. Imita a las list views permitiendo varios niveles de profundidad en listas y funcionalidades custom
  * @author            : Rubén Sánchez González
  * @created on        : 23-09-2022
@@ -21,7 +21,7 @@ import USER_ROLE_NAME from '@salesforce/schema/User.UserRole.Name';
 
 const SHOW = 'slds-show';
 const HIDE = 'slds-hide';
-export default class Rep_lwc_listViewEnhanced extends NavigationMixin(LightningElement) {
+export default class ListViewEnhanced extends NavigationMixin(LightningElement) {
 
     @api columns = [];
     @api records = [];
