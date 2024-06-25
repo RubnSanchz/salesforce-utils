@@ -1,6 +1,6 @@
 /**
  * @class name        : lwc_utils
- * @description       : Métodos LWC comunes para Química
+ * @description       : Métodos LWC comunes de utilidades varias
  * @author            : Rubén Sánchez González
  * @created on        : 17-01-2022
  * @last modified on  : 22-02-2024
