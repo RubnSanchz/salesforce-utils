@@ -1,0 +1,122 @@
+<template>
+
+    <div class="slds-page-header" data-id="topPage">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name={iconName} alternative-text={objectName} title={objectName}></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name slds-page-header__name-title">
+                            <h1>
+                            <span>{objectName}</span>
+                            <span class="slds-page-header__title slds-truncate" title="Recently Viewed">{headerContent}</span>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-page-header__col-actions slds-page-header__controls slds-page-header__control">
+                    <slot name="actionButtons-top">
+                        <lightning-button-group>
+                            <lightning-button label="Refresh" icon-name="utility:loop" onclick={eventRefeshView}></lightning-button>
+                            <lightning-button label="Exportar a CSV" icon-name="utility:table" onclick={exportCSV}></lightning-button>
+                            <lightning-button label="Exportar a Excel" icon-name="utility:table" onclick={exportXLSX}></lightning-button>
+                        </lightning-button-group>
+                    </slot>
+            </div>
+        </div>
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-meta">
+                <p class="slds-page-header__meta-text">Mostrando {numRecord} registro(s)<template if:true={recordsFullAmount}> de {recordsFullAmount} totales</template><template if:true={overtablemessage}> • {overtablemessage}</template></p>
+            </div>
+            <div class="slds-page-header__controls slds-page-header__control">
+                <slot name="actionButtons-bottom">
+                    <lightning-button-icon icon-name="utility:settings" alternative-text="Settings" title="Settings" onclick={doSettings}></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:filterlist" alternative-text="Settings" title="Settings" onclick={doSettings} class="REP_left"></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:add" alternative-text="Settings" title="Settings" onclick={doSettings} class="REP_left"></lightning-button-icon>
+                </slot>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLLAPSIBLE COMPONENT ~ Override: solt="collapsibleContent" -->
+    <div class={showCollapsible}>
+        <div class="REP_pop grow">
+            <slot name="collapsibleContent">
+                <p>Collapsible por defecto</p>
+            </slot>
+        </div>
+    </div>
+
+    <!-- MODAL COMPONENT COMPONENT ~ Override: solt="modalHeader" & solt="modalBody" & solt="end-buttons"  -->
+    <div class={showModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="width: 90%; max-width: none;">
+
+                <!-- header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Cerrar</span>
+                    </button>
+                    <slot name="modalHeader">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Por defecto</h2>
+                        <p>Rellene el slot="modalHeader" para modificar este contenido.</p>
+                    </slot>
+                </header>
+
+                <!-- body -->
+                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1" >
+                    <div data-id="mainModal">
+                        <slot name="modalBody">
+                            <p>Contenido por defecto del modal. No ha incluido una modificación del mismo. Rellene el slot="modalBody" para modificar este contenido.</p>
+                        </slot>
+                    </div>
+                </div>
+
+                <!-- footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="base" onclick={closeModal} title="Cancel" label="Cancelar"></lightning-button>
+                    <slot name="end-buttons">
+                        <lightning-button class="slds-var-m-left_large" variant="brand" onclick={doChange} title="OK" label="Confirmar" ></lightning-button>
+                    </slot>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+
+
+    <template if:true={errorMessage}>
+        <p>{errorMessage}</p>
+    </template>
+    <template if:false={errorMessage}>
+        <div style="height: 65vh;">
+            <lightning-datatable
+                key-field="Id"
+                data={records}
+                columns={columns}
+                onsort={doSorting}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                enable-infinite-loading={enableInfiniteScroll}
+                is-loading={loadingTable}
+                onloadmore={loadMoreData}
+                load-more-offset=30
+                column-widths-mode="auto"
+                min-column-width="80"
+            ></lightning-datatable>
+        </div>
+    </template>
+
+
+    <template if:true={loading}>
+        <div style="max-height: 100vh;">
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </div>
+    </template>
+
+
+</template>
