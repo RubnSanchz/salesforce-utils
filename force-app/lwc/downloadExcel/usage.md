@@ -2,6 +2,7 @@
 
 > [!WARNING]
 > The static resource needs to be downloaded and imported in environment previously.
+> Route: [text](../../staticResources/REP_sr_xlsx.zip)
 
 <br>
 
