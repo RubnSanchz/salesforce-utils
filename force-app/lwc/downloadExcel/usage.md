@@ -1,7 +1,9 @@
 How to import and use this component
 
 > [!WARNING]
-> The static resource needs to be downloaded previously
+> The static resource needs to be downloaded and imported in environment previously
+
+<br>
 
 ``` html
 <c-download-excel></c-download-excel>
