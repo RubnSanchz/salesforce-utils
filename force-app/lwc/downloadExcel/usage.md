@@ -1,9 +1,12 @@
-How to import and use this component
+# How to import and use this component
 
 > [!WARNING]
-> The static resource needs to be downloaded and imported in environment previously
+> The static resource needs to be downloaded and imported in environment previously.
 
 <br>
+
+It has to be embeeded on another component, for example a datatable component and be called through JS to its @api function decorated.
+This is an example on code to be inserted on the parent component.
 
 ``` html
 <c-download-excel></c-download-excel>
