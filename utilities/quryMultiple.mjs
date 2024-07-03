@@ -95,7 +95,7 @@ onEnd()
 console.log(`📄 ${bgGray}Procesando un total de ${ordenes.length} órdenes${reset}`)
 
 const ENDPOINT = ({
-    URL       : 'https://soa.repsol.com:8243/D2-REST/repositories/repprodocum3',
+    URL       : 'https://soa.business.com:8243/D2-REST/repositories/repprodocum3',
     QUERY     : '?dql= SELECT',
     FROM      : 'FROM',
     TABLE     : 'do2_gdgas_documento',
