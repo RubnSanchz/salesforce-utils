@@ -3,7 +3,7 @@
         lo = log --oneline
         logg = log --oneline --graph
         cob = checkout -b
-	co = checkout
+	    co = checkout
         res = reset --soft
         resh = reset --soft HEAD~
         p = push
