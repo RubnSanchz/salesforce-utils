@@ -1,0 +1,22 @@
+[alias] #Config by:     git config --global alias.*key* *traduction*
+        mnf = merge --no-ff
+        lo = log --oneline
+        logg = log --oneline --graph
+        cob = checkout -b
+	co = checkout
+        res = reset --soft
+        resh = reset --soft HEAD~
+        p = push
+        pf = push --force
+        ca = commit --amend
+        bn = rev-parse --abbrev-ref HEAD
+        wip = commit -m WIP
+        pb = "!git push -u origin $(git bn)"
+        cp = cherry-pick
+        alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
+	last = log -1 HEAD
+[user]
+	name = Ruben Sanchez Gonzalez
+	email = ruben.sanchez.g@***.com
+[credential]
+	helper = store
