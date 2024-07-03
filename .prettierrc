@@ -1,0 +1,39 @@
+{
+    "trailingComma": "all",
+    "semi": false,
+    "tabWidth": 2,
+    "useTabs": true,
+    "singleQuote": true,
+    "apexInsertFinalNewline": false,
+    "overrides": [
+        {
+            "files": "**/*.{cls,trigger,apex}",
+            "options": {
+                "tabWidth": 4,
+                "printWidth": 120,
+                "apexStandaloneParser": "native"
+            }
+        },
+        {
+            "files": "**/lwc/**/*.html",
+            "options": {
+                "parser": "lwc"
+            }
+        },
+        {
+            "files": "*.{cmp,page,component}",
+            "options": {
+                "parser": "html"
+            }
+        },
+        {
+            "files": "**/*.{json,wdash}",
+            "options": {
+                "parser": "json",
+                "tabWidth": 4,
+                "useTabs": false
+            }
+        }
+    ],
+    "plugins": ["prettier-plugin-apex"]
+}
