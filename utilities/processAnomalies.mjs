@@ -48,8 +48,8 @@ const argv = yargs(hideBin(process.argv))
 
 const today = new Date().toISOString().split('T')[ 0 ];
 
-const FOLDER         = 'Notes/results'
-const WORKING_FOLDER = 'Notes/source/Anomalias'
+const FOLDER         = 'utilities/results'
+const WORKING_FOLDER = 'utilities/source/Anomalias'
 mkdirSync(FOLDER, { recursive: true })
 mkdirSync(WORKING_FOLDER, { recursive: true })
 const writeStreamDeta = createWriteStream(`${WORKING_FOLDER}/DETA_${today}.csv`)
