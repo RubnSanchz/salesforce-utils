@@ -1,0 +1,68 @@
+<!--
+  @class name        : categoriesInput
+  @description       : Componente para mostrar la ficha para crear un nuevo informe de visita
+  @created on        : 11-09-2024
+  @last modified on  : 12-09-2024
+  @last modified by  : Rubén Sánchez González
+-->
+<template>
+    <div class="slds-grid">
+      <!-- Navigation Section -->
+      <div class="slds-col" style="width: 25%; padding-top: 1rem; padding-left: 0" >
+        <lightning-vertical-navigation
+          selected-item={selectedItem}
+          onselect={handleItemClick}
+        >
+          <lightning-vertical-navigation-section
+            label="Categorías temas tratados"
+          >
+            <template for:each={navigationItems} for:item="item">
+              <lightning-vertical-navigation-item-icon
+                key={item.name}
+                label={item.label}
+                name={item.name}
+                icon-name={item.iconName}
+              >
+              </lightning-vertical-navigation-item-icon>
+            </template>
+          </lightning-vertical-navigation-section>
+  
+          <lightning-vertical-navigation-section
+            label="Otra información"
+            style="padding-left: 0"
+          >
+            <template for:each={additionalItems} for:item="item">
+              <lightning-vertical-navigation-item
+                key={item.name}
+                label={item.label}
+                name={item.name}
+              >
+              </lightning-vertical-navigation-item>
+            </template>
+          </lightning-vertical-navigation-section>
+  
+        </lightning-vertical-navigation>
+      </div>
+  
+      <!-- Input Section -->
+      <div
+        class="slds-col"
+        style="width: 75%; padding-left: 20px; padding-top: 1rem"
+      >
+        <template if:true={selectedItem}>
+          <lightning-input-rich-text
+            value={selectedItemValue}
+            onchange={handleInputChange}
+            placeholder={selectedItemPlaceholder}
+          >
+          </lightning-input-rich-text>
+        </template>
+        <template if:false={selectedItem}>
+          <p style="color: gray">
+            -- Seleccione y rellene al menos una de las categorías --
+          </p>
+        </template>
+      </div>
+    </div>
+  </template>
+  
