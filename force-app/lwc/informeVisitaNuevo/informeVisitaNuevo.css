@@ -1,0 +1,81 @@
+/* Make the label bold and show as required */
+.slds-form-element__label {
+    font-weight: bold !important;
+}
+
+/* Specific styles for lightning-input */
+.lightning-input .slds-form-element__label {
+    font-weight: bold !important;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+/* Custom styles for inline checkbox display */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.custom-checkbox lightning-input {
+    margin-right: 0.2em; /* Space between checkbox and icon */
+}
+
+.custom-checkbox .checkbox-icon {
+    margin-right: 0.5em; /* Space between icon and label */
+}
+
+.custom-checkbox .checkbox-label {
+    font-weight: normal; /* Ensure label is not bold */
+}
+
+.rich-text-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.rich-text-icon {
+    margin-right: 0.5rem;
+}
+
+.custom-label-text {
+    font-weight: bold;
+}
+
+hr {
+    margin: 0 2rem 0 2rem;
+}
+
+/* Animation appear text boxes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Apply the animation to the elements */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.error {
+    color: #BA0517
+}
+
+.loading{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}

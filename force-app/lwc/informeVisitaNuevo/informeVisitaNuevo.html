@@ -1,0 +1,319 @@
+<!--
+  @class name        : informeVisitaNuevo
+  @description       : Form to create a new visit report. For FFVV and ATD users. Common for both.
+  @author            : Rubén Sánchez González
+  @created on        : 13-09-2024
+  @last modified on  : 07-10-2024
+  @last modified by  : Rubén Sánchez González
+-->
+<template>
+  <template if:false={loaded}>
+    <div style="text-align:center">
+      <lightning-spinner alternative-text="Loading" size="large" class="loading"></lightning-spinner>
+    </div>
+  </template>
+  <template if:true={loaded}>
+    <template if:false={showEmail}>
+      <!-- Section 0: Cliente -->
+      <template if:true={canEdit}>
+        <lightning-layout style="justify-content: center" multiple-rows>
+          <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="8" padding="around-small" >
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Cliente:</label>
+            <lightning-record-picker
+              name="cliente"
+              data-name="cliente"
+              label="Solicitante o destinatario de mercancías"
+              placeholder="Buscar cliente por nombre o código de química"
+              object-api-name="Account"
+              value={clienteId}
+              onchange={changeRecordPicker}
+              matching-info={matchingInfoCliente}
+              filter={filterAccount}
+              disabled={clienteDisabled}
+            >
+            </lightning-record-picker>
+          </lightning-layout-item>
+        </lightning-layout>
+
+        <!-- Section 1: Asunto | Fecha visita -->
+        <lightning-layout multiple-rows>
+          <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="8" padding="around-small" >
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Asunto:</label>
+            <lightning-input
+              name="asunto"
+              data-name="asunto"
+              type="text"
+              class="custom-input"
+              variant="label-hidden"
+              placeholder="Asunto de la visita"
+              value={asunto}
+              disabled={visitaDisabled}
+              onchange={changeDefault}
+              required
+            ></lightning-input>
+          </lightning-layout-item>
+
+          <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="2" padding="around-small" >
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Fecha visita:</label>
+            <lightning-input
+              type="date"
+              name="fechaVisita"
+              data-name="fechaVisita"
+              label=""
+              variant="label-hidden"
+              value={fechaVisita}
+              disabled={visitaDisabled}
+              onchange={changeDefault}
+              required
+            ></lightning-input>
+          </lightning-layout-item>
+        </lightning-layout>
+
+        <!-- Section 2: [Importancia | Tipo de reunión] |  [Producto | Aplicación] | Motivo de visita | Asistentes -->
+        <lightning-layout multiple-rows>
+          <template if:true={isFFVV}>
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="2" padding="around-small" >
+              <label class="slds-form-element__label">Importancia:</label>
+              <lightning-radio-group
+                name="importancia"
+                data-name="importancia"
+                variant="label-hidden"
+                value={importancia}
+                placeholder="Seleccione entre las opciones"
+                options={optionsImportancia}
+                onchange={changeDefault}
+              ></lightning-radio-group>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="2" padding="around-small" >
+              <label class="slds-form-element__label">Tipo de reunión:</label>
+              <lightning-radio-group
+                name="tipoReunion"
+                data-name="tipoReunion"
+                variant="label-hidden"
+                value={tipoReunion}
+                placeholder="Seleccione entre las opciones"
+                options={optionsTipoReunion}
+                onchange={changeDefault}
+              ></lightning-radio-group>
+            </lightning-layout-item>
+          </template>
+
+          <template if:true={isATD}>
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="2" padding="around-small" >
+              <lightning-checkbox-group
+                name="producto"
+                data-name="producto"
+                label="Producto:"
+                value={producto}
+                options={optionsProducto}
+                onchange={changeDefault}
+              ></lightning-checkbox-group>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="2" padding="around-small" >
+              <lightning-radio-group
+                name="aplicacion"
+                data-name="aplicacion"
+                label="Aplicación:"
+                value={aplicacion}
+                options={optionsAplicacion}
+                onchange={changeDefault}
+              ></lightning-radio-group>
+            </lightning-layout-item>
+          </template>
+
+          <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="4" padding="around-small" >
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Motivo de la visita:</label>
+            <lightning-checkbox-group
+              name="motivos"
+              data-name="motivos"
+              variant="label-hidden"
+              options={optionsMotivos}
+              value={motivos}
+              onchange={changeDefault}
+              required
+            ></lightning-checkbox-group>
+          </lightning-layout-item>
+
+          <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="4" padding="around-small" >
+            <label class="slds-form-element__label">Asistentes:</label>
+            <lightning-textarea
+              name="asistentes"
+              data-name="asistentes"
+              placeholder="Asistentes de la reunión. Informativo"
+              variant="label-hidden"
+              value={asistentes}
+              onchange={changeDefault} 
+            ></lightning-textarea>
+
+            <lightning-icon icon-name="utility:user" size="xx-small" class="checkbox-icon"></lightning-icon>
+            <span class="slds-form-element__label checkbox-label" style="margin: 0.5em 0 -1em 0.5em">Colaborador asociado:</span>
+            <lightning-record-picker
+              name="colaborador"
+              data-name="colaborador"
+              label="Quién puede modificar el informe además de usted (informe conjunto)"
+              placeholder="Buscar usuario por nombre o código de gestor"
+              object-api-name="User"
+              value={colabodador}
+              onchange={changeRecordPicker}
+              matching-info={matchingInfo}
+              disabled={isColaborador}
+            >
+            </lightning-record-picker>
+          </lightning-layout-item>
+        </lightning-layout>
+
+        <hr />
+
+        <!-- Section 3: Resumen y conclusiones | Palabras clave | Temas tratados -->
+        <lightning-layout multiple-rows>
+          <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="8" padding="around-small" >
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Resumen y conclusiones:</label>
+            <lightning-input-rich-text
+              name="resumen"
+              data-name="resumen"
+              variant="label-hidden"
+              value={resumen}
+              onchange={changeDefault}
+              placeholder="Resumen y conclusiones de la visita. Para más detalle seleccione temas tratados"
+              required
+            ></lightning-input-rich-text>
+            <template if:true={notResumen}>
+              <p class="slds-form-element__help error">Este campo es obligatorio.</p>
+            </template>
+
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Acciones y responsable:</label>
+            <lightning-input-rich-text
+              name="acciones"
+              data-name="acciones"
+              variant="label-hidden"
+              value={acciones}
+              onchange={changeDefault}
+              placeholder="Próximos pasos a realizar y por quién"
+              required
+            ></lightning-input-rich-text>
+            <template if:true={notAcciones}>
+              <p class="slds-form-element__help error">Este campo es obligatorio.</p>
+            </template>
+
+            <label class="slds-form-element__label">Palabras clave:</label>
+            <lightning-input
+              name="clave"
+              data-name="clave"
+              type="text"
+              variant="label-hidden"
+              value={clave}
+              placeholder="Se podrán emplear en el buscador de informes"
+              onchange={changeDefault}
+            ></lightning-input>
+          </lightning-layout-item>
+
+          <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="4" padding="around-small" >
+            <div class="custom-checkbox-group" data-name="temasTratados">
+              <abbr title="required" class="slds-required">*</abbr>
+              <label class="slds-form-element__label">Temas Tratados:</label>
+              <div class="slds-form-element__control">
+                <template for:each={temasTratados} for:item="tema">
+                  <div key={tema.name} class="slds-checkbox custom-checkbox">
+                    <template if:true={tema.lastItem}>
+                      <div style="padding-top: 3rem"></div>
+                    </template>
+                    <lightning-input
+                      type="checkbox"
+                      name={tema.name}
+                      data-icon={tema.iconName}
+                      checked={tema.selected}
+                      onchange={handleCheckboxChange}
+                    ></lightning-input>
+                    <lightning-icon icon-name={tema.iconName} size="xx-small" class="checkbox-icon" ></lightning-icon>
+                    <span class="checkbox-label">{tema.label}</span>
+                  </div>
+                </template>
+              </div>
+              <template if:true={notPickedTema}>
+                <p class="slds-form-element__help error"> Debe seleccionarse al menos un tema. </p>
+              </template>
+            </div>
+          </lightning-layout-item>
+        </lightning-layout>
+
+        <!-- Section 4: Rich Text Inputs for Selected Temas Tratados -->
+        <template for:each={temasTratados} for:item="tema">
+          <template if:true={tema.selected}>
+            <lightning-layout key={tema.name} class="fade-in">
+              <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="12" padding="around-small" >
+                <div class="rich-text-section">
+                  <div class="custom-label">
+                    <lightning-icon icon-name={tema.iconName} size="small" class="rich-text-icon" ></lightning-icon>
+                    <abbr title="required" class="slds-required">*</abbr>
+                    <p class="custom-label-text">{tema.label}</p>
+                  </div>
+                  <lightning-input-rich-text
+                    name={tema.name}
+                    data-name={tema.name}
+                    label=""
+                    placeholder={tema.placeholder}
+                    required
+                    onchange={changeDefault}
+                    value={tema.value}
+                    valid={tema.valid}
+                  ></lightning-input-rich-text>
+                  <template if:false={tema.valid}>
+                    <p class="slds-form-element__help error"> Este campo es obligatorio. </p>
+                  </template>
+                </div>
+              </lightning-layout-item>
+            </lightning-layout>
+          </template>
+        </template>
+
+        <!-- Submit buttons section -->
+        <template if:false={hideSubmit}>
+          <lightning-modal-footer>
+            <lightning-layout>
+              <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="12" padding="around-small" >
+                <div class="slds-grid slds-grid_align-end">
+                  <lightning-button
+                    label="Guardar"
+                    icon-name="utility:save"
+                    icon-position="left"
+                    class="slds-m-right_small"
+                    onclick={handleSave}
+                  ></lightning-button>
+                  <lightning-button
+                    label="Guardar y enviar"
+                    icon-name="utility:send"
+                    icon-position="left"
+                    variant="brand"
+                    onclick={handleSaveAndSend}
+                  ></lightning-button>
+                </div>
+              </lightning-layout-item>
+            </lightning-layout>
+          </lightning-modal-footer>
+        </template>
+
+      </template>
+      <template if:false={canEdit}>
+        <p class="slds-form-element__help error">
+          No puede modificar este informe de visita. Usted no es dueño de el mismo
+          ni ha sido indicado como colaborador.
+        </p>
+      </template>
+    </template>
+
+    <template if:true={showEmail}>
+      <div style="min-height:20rem; overflow: auto;">
+        <c-qufv_lwc_email-list onlistemail={captureEmailList}></c-qufv_lwc_email-list>
+      </div>
+    </template>
+
+  </template>
+</template>
