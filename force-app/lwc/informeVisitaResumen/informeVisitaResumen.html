@@ -1,0 +1,80 @@
+<!--
+  @class name        : qufv_lwc_informeVisitaResumen
+  @description       : LWC to display info related to the visit. Wrapped by QUATD_cmp_resumenVisitaCliente.
+  @author            : Rubén Sánchez González
+  @created on        : 18-09-2024
+  @last modified on  : 07-10-2024
+  @last modified by  : Rubén Sánchez González
+-->
+<template>
+  <lightning-record-view-form
+    record-id={informeId}
+    object-api-name="QUFV_obj_informeVisita__c"
+  >
+    <div class="slds-box slds-m-around_xx-small slds-theme_default">
+      <lightning-output-field field-name="Name">
+      </lightning-output-field>
+      <lightning-output-field field-name="QUFV_fld_eventSubject__c">
+      </lightning-output-field>
+      <template if:true={isFFVV}>
+        <lightning-output-field field-name="QUFV_fld_importancia__c">
+        </lightning-output-field>
+        <lightning-output-field field-name="QUFV_fld_tiporeunion__c">
+        </lightning-output-field>
+      </template>
+      <template if:true={isATD}>
+        <lightning-output-field field-name="QUATD_fld_productos__c">
+        </lightning-output-field>
+        <lightning-output-field field-name="QUATD_fld_aplicacion__c">
+        </lightning-output-field>
+      </template>
+      <lightning-output-field field-name="QUATD_fld_motivo__c">
+      </lightning-output-field>
+      <lightning-output-field field-name="QUATD_fld_asistentes__c">
+      </lightning-output-field>
+      <lightning-output-field field-name="QUATD_fld_usuarioAsociado__c">
+      </lightning-output-field>
+      <lightning-output-field field-name="QUATD_fld_resumen__c">
+      </lightning-output-field>
+      <lightning-output-field field-name="QUATD_fld_acciones__c">
+      </lightning-output-field>
+      <lightning-output-field field-name="QUATD_fld_palabrasClave__c">
+      </lightning-output-field>
+    </div>
+  </lightning-record-view-form>
+
+  <template for:each={temasDisplay} for:item="tema">
+    <template if:true={tema.value}>
+      <lightning-layout
+        key={tema.name}
+        vertical-align="start"
+        class="slds-box slds-m-around_xx-small"
+      >
+        <lightning-layout-item size="1">
+          <lightning-icon
+            icon-name={tema.iconName}
+            size="small"
+          ></lightning-icon>
+        </lightning-layout-item>
+        <lightning-layout-item size="11">
+          <p
+            style="
+              font-weight: bold;
+              font-size: 1.1rem;
+              color: gray;
+              border-bottom: gray;
+              border-bottom-style: solid;
+              border-width: thin;
+              margin-left: 5px
+            "
+          >
+            {tema.label}
+          </p>
+          <lightning-formatted-rich-text
+            value={tema.value}
+          ></lightning-formatted-rich-text>
+        </lightning-layout-item>
+      </lightning-layout>
+    </template>
+  </template>
+</template>
