@@ -5,8 +5,8 @@
  *                     --fAsset: BBDD file to process and output. Fill 'buzon'
  * @author            : Rubén Sánchez González
  * @created on        : 05-07-2024
- * @last modified on  : 05-07-2024
- * @last modified by  : Rubén Sánchez González - ruben.s.gonzalez@accenture.com
+ * @last modified on  : 07-10-2024
+ * @last modified by  : Rubén Sánchez González
 **/
 
 import {
