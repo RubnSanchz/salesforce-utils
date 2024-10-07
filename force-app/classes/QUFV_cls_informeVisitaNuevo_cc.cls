@@ -4,7 +4,7 @@
  * @author            : Rubén Sánchez González
  * @created on        : 17-09-2024
  * @last modified on  : 07-10-2024
- * @last modified by  : Rubén Sánchez González - ruben.s.gonzalez@accenture.com
+ * @last modified by  : Rubén Sánchez González
  * @test class        : QUFV_cls_informeVisitaNuevo_test
  **/
 public with sharing class QUFV_cls_informeVisitaNuevo_cc {
@@ -326,7 +326,7 @@ public with sharing class QUFV_cls_informeVisitaNuevo_cc {
 	 * @author            : Rubén Sánchez González
 	 * @created on        : 17-09-2024
 	 * @last modified on  : 07-10-2024
-	 * @last modified by  : Rubén Sánchez González - ruben.s.gonzalez@accenture.com
+	 * @last modified by  : Rubén Sánchez González
 	 **/
 	public with sharing class InformeData {
 		public String informe { get; set; }
