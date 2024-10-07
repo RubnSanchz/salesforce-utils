@@ -1,7 +1,6 @@
 # salesforce-utils
-Utilities for different Salesforce projects
+A collection of utility tools for various Salesforce projects.
 
-Developed on free time and may or may not be used in final private projects
+Developed during personal time and may or may not be integrated into final private projects.
 
-> [!TIP]
-> Open repository, new classes and components will be added on future
+[!TIP] This is an open repository, continuously improved and updated with new classes and components.
