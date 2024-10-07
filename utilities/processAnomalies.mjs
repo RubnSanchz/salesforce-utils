@@ -3,10 +3,10 @@
  *                      Passed as parameters:
  *                     --fDETA: 500_DETA file
  *                     --fINST: 500_INST file
- * @author            : Rubén Sánchez González - ruben.s.gonzalez@accenture.com
+ * @author            : Rubén Sánchez González
  * @created on        : 21-11-2023
- * @last modified on  : 21-11-2023
- * @last modified by  : Rubén Sánchez González - ruben.s.gonzalez@accenture.com
+ * @last modified on  : 07-10-2024
+ * @last modified by  : Rubén Sánchez González
 **/
 
 import {
