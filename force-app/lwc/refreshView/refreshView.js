@@ -4,7 +4,7 @@
  * @author            : 07-10-2024
  * @created on        : Rubén Sánchez González
  * @last modified on  : 07-10-2024
- * @last modified by  : Rubén Sánchez González - ruben.s.gonzalez@accenture.com
+ * @last modified by  : Rubén Sánchez González
 **/
 import { LightningElement, api } from 'lwc';
 import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
