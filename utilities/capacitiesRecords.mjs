@@ -96,69 +96,7 @@ function parseFile(file) {
           let yearIteration = 0
           let year = value.argv.offset || YEARS[yearIteration]
 
-          for (let i = 0; i <= YEARS.length; i++) {
-            if (
-              ['', undefined].includes(
-                value[
-                  `ProductRequestLineItems.records.${i}.CPSVA_fld_precio__c`
-                ],
-              )
-            )
-              break
-            calcValue += Number(
-              value[`ProductRequestLineItems.records.${i}.CPSVA_fld_precio__c`],
-            )
-            calcValueIVA += Number(
-              value[
-                `ProductRequestLineItems.records.${i}.CPSVA_fld_importeConIVA__c`
-              ],
-            )
-
-            if (
-              value[
-                `ProductRequestLineItems.records.${i}.CPSVA_fld_esDelCliente__c`
-              ]
-            ) {
-              calcbusiness += calcValue
-              calcbusinessIVA += calcValueIVA
-            } else {
-              calcCliente += calcValue
-              calcClienteIVA += calcValueIVA
-            }
-          }
-
-          if (calcValue == 0) {
-            for (let i = 0; ; i++) {
-              if (
-                ['', undefined].includes(
-                  value[
-                    `ProductRequests.records.${i}.CPSVA_fld_precioTotal__c`
-                  ],
-                )
-              )
-                break
-              calcValue += Number(
-                value[`ProductRequests.records.${i}.CPSVA_fld_precioTotal__c`],
-              )
-              calcValueIVA += Number(
-                value[
-                  `ProductRequests.records.${i}.CPSVA_fld_importeTotalConIVA__c`
-                ],
-              )
-
-              calcbusiness += calcValue
-              calcbusinessIVA += calcValueIVA
-            }
-          }
-
-          // si cambia guardo valor para modificarlo
-          let cond1 = value.CPSVA_fld_importeFactura__c != calcValue
-          let cond2 = value.CPSVA_fld_precioTotalCliente__c != calcCliente
-          let cond3 = value.CPSVA_fld_precioTotalbusiness__c != calcbusiness
-          if (cond1 || cond2 || cond3) {
-            let line = `"${value.Id}","${calcValue}","${calcValueIVA}","${calcCliente}","${calcbusiness}","${value.CPSVA_fld_precioTotalCliente__c}","${value.CPSVA_fld_precioTotalbusiness__c}"\n`
-            writeStream.write(line)
-          }
+          
         } catch (error) {
           console.error(
             `error while processing row ${error} ${value.CUSTOMER_ID}`,
