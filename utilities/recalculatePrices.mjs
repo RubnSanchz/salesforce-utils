@@ -1,6 +1,6 @@
 /* 
-  * Description: NodeJS para extraer los documentumId de los ficheros asociados a las órdenes recibidas en el fichero input.
-  * Usage: node extractDocumentumId.mjs -f <fichero_input>
+  * Description: NodeJS para calcular los previso de las órdenes de servicio. Recupera de BBDD el estado actual de los registros.
+  * Usage: node recalculatePrices.mjs -f <fichero_input> [-o <offset_query>]
   * Results: results/<fichero_input>-documentumId.csv
 */
 
