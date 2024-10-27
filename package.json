@@ -2,5 +2,11 @@
     "devDependencies": {
         "prettier": "^3.0.3",
         "prettier-plugin-apex": "2.1.4"
+    },
+    "dependencies": {
+        "csv-parser": "^3.0.0",
+        "glob": "^11.0.0",
+        "json2csv": "^6.0.0-alpha.2",
+        "yargs": "^17.7.2"
     }
 }
