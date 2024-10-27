@@ -30,8 +30,8 @@ const argv = yargs(hideBin(process.argv))
     alias: 'f',
     describe: 'Input File',
     type: 'string',
-    requiresArg: true,
-    required: true,
+    requiresArg: false,
+    required: false,
   })
   .option('year', {
     alias: 'y',
@@ -46,10 +46,10 @@ const FOLDER_SOURCE = 'utilities/source'
 const FOLDER_RESULT = 'utilities/results'
 mkdirSync(FOLDER_SOURCE, { recursive: true })
 mkdirSync(FOLDER_RESULT, { recursive: true })
-const targetFile = `${FOLDER_SOURCE}/capacidades.csv`
-const writeStream = createWriteStream(
-  `${FOLDER_RESULT}/capacidades-toInsert.csv`,
-)
+const FILE_SOURCE = 'capacidades.csv'
+const FILE_RESULT = 'capacidades-toInsert.csv'
+const targetFile = `${FOLDER_SOURCE}/${FILE_SOURCE}`
+const writeStream = createWriteStream(`${FOLDER_RESULT}/${FILE_RESULT}`)
 
 // main method
 async function onExec() {
@@ -84,7 +84,7 @@ function parseFile(file) {
       'QUFV_fld_comments__c',
       'QUFV_fld_idExterno__c',
     ]
-    writeStream.write(HEADER_DOC)
+    writeStream.write(HEADER_DOC.join(','))
 
     console.log(`info: escribiendo fichero output...`)
     const inputStream = createReadStream(file, { encoding: 'utf8' })
@@ -95,8 +95,7 @@ function parseFile(file) {
           // Por cada fila sumo columnas
           let yearIteration = 0
           let year = value.argv.offset || YEARS[yearIteration]
-
-          
+          let name = 
         } catch (error) {
           console.error(
             `error while processing row ${error} ${value.CUSTOMER_ID}`,
@@ -107,7 +106,7 @@ function parseFile(file) {
         resolve()
         console.log(`info: escritura completa`)
         console.log(
-          `Resultados en fichero:${fgCyan} ${FOLDER_RESULT}/presupuestos-toUpdate.csv${reset}`,
+          `Resultados en fichero:${fgCyan} ${FOLDER_RESULT}/${FILE_RESULT}${reset}`,
         )
       })
   })
