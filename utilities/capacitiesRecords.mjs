@@ -1,6 +1,6 @@
 /*
  * Description: NodeJS para crear los registros necesarios de capacidades por cliente, familia y año.
- * Usage: node capacitiesRecords.mjs -f <fichero_input> [-e <entorno_ejecucion>] [-y <año_capacidad>] [-a <subset_cuentas>]
+ * Usage: node capacitiesRecords.mjs -f <fichero_input> [-y <año_capacidad>] [-a <subset_cuentas>]
  * Results: results/capacidades-toInsert.csv
  */
 
@@ -34,13 +34,6 @@ const argv = yargs(hideBin(process.argv))
     requiresArg: false,
     required: false,
   })
-  .option('env', {
-    alias: 'e',
-    describe: 'Entorno de ejecución',
-    type: 'string',
-    requiresArg: false,
-    required: false,
-  })
   .option('year', {
     alias: 'y',
     describe: 'Año que se quiere sacar los datos',
@@ -66,20 +59,21 @@ const FILE_RESULT = 'capacidades-toInsert.csv'
 const targetFile = `${FOLDER_SOURCE}/${FILE_SOURCE}`
 const writeStream = createWriteStream(`${FOLDER_RESULT}/${FILE_RESULT}`)
 
-const RT_AJUSTE = 'QUFV_rt_ajusteCapacidad'
-const RT_INTERMEDIOS = 'QUFV_rt_capacidadIntermedios'
-const RT_POLIOLEFINAS = 'QUFV_rt_capacidadPoliolefinas'
+const RT_AJUSTE = 'Ajuste Capacidad'
+const RT_INTERMEDIOS = 'Capacidad Intermedios'
+const RT_POLIOLEFINAS = 'Capacidad Poliolefinas'
 const FAMILIES_INTERMEDIOS = ['GLICOLES', 'POLIOLES', 'ESTIRENO', 'OP']
 const FAMILIES_POLIOLEFINAS = ['PEAD', 'PEBD', 'PEL', 'm-PEL', 'EVBA', 'PP']
 const HEADER_DOC = [
   'Name',
   'RecordType:RecordType:Name',
-  'QUFV_fld_account__c',
-  'QUFV_fld_sumi__c',
+  'QUFV_fld_account__r:Account:RQO_fld_idExterno__c',
+  'QUFV_fld_sumi__r:Account:RQO_fld_idExterno__c',
   'QUFV_fld_year__c',
   'QUFV_fld_family__c',
   'QUFV_fld_anualConsumption__c',
   'QUFV_fld_consolidatedSales__c',
+  'QUFV_fld_lastModifiedDate__c',
   'QUFV_fld_competitors__c',
   'QUFV_fld_comments__c',
   'QUFV_fld_idExterno__c',
@@ -118,6 +112,11 @@ function getRT(family) {
   }
   return rtLineaNegocio
 }
+
+function formatDate(dateStr) {
+  const [day, month, year] = dateStr.split('/');
+  return `${year}-${month}-${day}`;
+}
 // #endregion aux functions
 
 // #region main methods
@@ -125,7 +124,6 @@ async function onExec() {
   try {
     console.log(`info: running script...`)
     year = argv.year || YEARS[yearIteration]
-    env = argv.env || 'pdes'
     accounts = argv.accounts
     console.log(`info: file source ${fgCyan}${targetFile}${reset}`)
     await parseFile(targetFile)
@@ -142,63 +140,77 @@ function parseFile(file) {
     inputStream
       .pipe(csv({ separator: ',' }))
       .on('data', (value) => {
-        try {
-          // Skip processing if the line is empty
-          if (!value?.clientCode) {
-            return
-          }
+        const cleanedValue = {}
+        for (const key in value) {
+          cleanedValue[key.trim()] = value[key]
+        }
 
+        try {
           for (let i = 0; i < YEARS.length; i++) {
+            year = argv.year || YEARS[i]
+
             // Skip processing conditions
-            if (accounts && !accounts.includes(value.clientCode)) continue
-            if (!value[`consumo_${year}`]) continue
+            if ( accounts && !accounts .split(',') .some((account) => cleanedValue.clientCode.includes(account)) ) continue // Skip if account is not in subset
+            if ( !cleanedValue[`consumo${year}`] ) continue // Skip if consumption is empty
+
+            let clientCode, sumiCode
+            if (cleanedValue.clientCode.length === 5) {
+              clientCode = `00000${cleanedValue.clientCode}`
+            } else {
+              clientCode = `00000${cleanedValue.clientCode.slice(0, 5)}`
+              sumiCode = cleanedValue.clientCode
+            }
 
             // process data
-            year = argv.year || YEARS[i]
-            const KEY = `${value.clientCode}-${year}-${capitalizeFirstLetter(
-              value.family,
-            )}`
+            const KEY = `${cleanedValue.clientCode}-${year}-${capitalizeFirstLetter(cleanedValue.family)}`
+            const KEY_PARENT = `${cleanedValue.clientCode.slice(0, 5)}-${year}-${capitalizeFirstLetter(cleanedValue.family)}-TOTAL`
 
-            if (capacidades.has(KEY)) {
-              capacidades.get(`${KEY}-TOTAL`).QUFV_fld_consolidatedSales__c +=
-                value.QUFV_fld_consolidatedSales__c
+            let capacidad
+            if (capacidades.has(KEY_PARENT)) {
+              capacidad = capacidades.get(KEY_PARENT)
+              capacidad.QUFV_fld_consolidatedSales__c = Number(capacidad.QUFV_fld_consolidatedSales__c) + Number(cleanedValue[`ventas${year}`])
             } else {
-              const KEY_PARENT = `${KEY}-TOTAL`
-              let capacidad = {
+              capacidad = {
                 Name: KEY_PARENT,
                 'RecordType:RecordType:Name': RT_AJUSTE,
-                QUFV_fld_account__c: value[`${env}_Acc`],
+                'QUFV_fld_account__r:Account:RQO_fld_idExterno__c': clientCode,
+                'QUFV_fld_sumi__r:Account:RQO_fld_idExterno__c': null,
                 QUFV_fld_year__c: year,
-                QUFV_fld_family__c: capitalizeFirstLetter(value.family),
+                QUFV_fld_family__c: capitalizeFirstLetter(cleanedValue.family),
                 QUFV_fld_anualConsumption__c: 0,
-                QUFV_fld_consolidatedSales__c: value[`ventas_${year}`],
-                QUFV_fld_competitors__c: '',
-                QUFV_fld_comments__c: '',
+                QUFV_fld_consolidatedSales__c: cleanedValue[`ventas${year}`] || 0,
+                QUFV_fld_lastModifiedDate__c: null,
+                QUFV_fld_competitors__c: null,
+                QUFV_fld_comments__c: null,
                 QUFV_fld_idExterno__c: KEY_PARENT,
               }
-              capacidades.set(KEY_PARENT, capacidad)
-
-              capacidad = {
-                Name: KEY,
-                'RecordType:RecordType:Name': getRT(value.familiy),
-                QUFV_fld_account__c: value[`${env}_Acc`],
-                QUFV_fld_sumi__c: value[`${env}_sumi`],
-                QUFV_fld_year__c: year,
-                QUFV_fld_family__c: capitalizeFirstLetter(value.family),
-                QUFV_fld_anualConsumption__c: value[`consumo_${year}`],
-                QUFV_fld_consolidatedSales__c: value[`ventas_${year}`],
-                QUFV_fld_competitors__c: value.competidores,
-                QUFV_fld_comments__c: value.comentarios,
-                QUFV_fld_idExterno__c: KEY,
-              }
-              capacidades.set(KEY, capacidad)
-
               recordCounts[year]++
             }
+            capacidades.set(KEY_PARENT, capacidad)
+
+            capacidad = {
+              Name: KEY,
+              'RecordType:RecordType:Name': getRT(cleanedValue.family),
+              'QUFV_fld_account__r:Account:RQO_fld_idExterno__c': clientCode,
+              'QUFV_fld_sumi__r:Account:RQO_fld_idExterno__c': sumiCode,
+              QUFV_fld_year__c: year,
+              QUFV_fld_family__c: capitalizeFirstLetter(cleanedValue.family),
+              QUFV_fld_anualConsumption__c: cleanedValue[`consumo${year}`] || 0,
+              QUFV_fld_consolidatedSales__c: cleanedValue[`ventas${year}`] || 0,
+              QUFV_fld_lastModifiedDate__c: formatDate(cleanedValue.fDato) || null,
+              QUFV_fld_competitors__c: cleanedValue.competidores || null,
+              QUFV_fld_comments__c: cleanedValue.comentarios || null,
+              QUFV_fld_idExterno__c: KEY,
+            }
+            capacidades.set(KEY, capacidad)
+            
+            recordCounts[year]++
+            
           }
         } catch (error) {
           console.error(
-            `error while processing row ${error} ${value.CUSTOMER_ID}`,
+            `error while processing row ${error} 
+            ${cleanedValue.clientCode}-${year}-${capitalizeFirstLetter(cleanedValue.family)}`,
           )
         }
       })
@@ -212,14 +224,17 @@ function parseFile(file) {
 
 function writeCapacidades() {
   console.log(`info: writing output file...`)
-  writeStream.write(HEADER_DOC.join(',') + '\n')
-  writeStream.write(parse(Array.from(capacidades.values())))
+  const processedCapacidades = Array.from(capacidades.values())
+
+  writeStream.write(parse(processedCapacidades))
   console.log(`info: writting succeded`)
+
   console.log(SPLIT_LINE)
   console.log('info: record counts per year:')
   for (const [year, count] of Object.entries(recordCounts)) {
     console.log(`  > Year ${year}: ${count} records`)
   }
+  console.log(`  > TOTAL: ${processedCapacidades.length} records`)
   console.log(
     `Results on file:${fgCyan} ${FOLDER_RESULT}/${FILE_RESULT}${reset}`,
   )
