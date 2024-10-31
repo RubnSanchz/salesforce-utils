@@ -23,6 +23,7 @@ const reset = '\x1b[0m'
 const bgGray = '\x1b[47m'
 const fgCyan = '\x1b[36m'
 const bgCyan = '\x1b[46m'
+const fgRed = '\x1b[31m'
 const SPLIT_LINE =
   '_______________________________________________________________'
 
@@ -224,7 +225,12 @@ function parseFile(file) {
 
 function writeCapacidades() {
   console.log(`info: writing output file...`)
+  
   const processedCapacidades = Array.from(capacidades.values())
+  if (processedCapacidades.length === 0) {
+    console.log(`error: ${fgRed}there are not capacities for the input data${reset}`)
+    return
+  }
 
   writeStream.write(parse(processedCapacidades))
   console.log(`info: writting succeded`)
