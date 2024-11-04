@@ -4,9 +4,12 @@
         "prettier-plugin-apex": "2.1.4"
     },
     "dependencies": {
+        "child_process": "^1.0.2",
         "csv-parser": "^3.0.0",
+        "fs": "^0.0.1-security",
         "glob": "^11.0.0",
         "json2csv": "^6.0.0-alpha.2",
+        "util": "^0.12.5",
         "yargs": "^17.7.2"
     }
 }
