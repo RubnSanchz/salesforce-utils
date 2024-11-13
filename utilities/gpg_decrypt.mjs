@@ -1,6 +1,6 @@
 // Encryption: gpg --batch --passphrase "$GPG_PASSWORD" --symmetric --cipher-algo AES256 <route_to_file>
 // *** remember to set the GPG_PASSWORD environment variable. Then export  GPG_PASSWORD
-// Decryption usage: node decrypt_gpg.mjs -f <route_to_file> [-d <bool_delete_source_file>]
+// Decryption usage: node decrypt_gpg.mjs -f <route_to_file>
 
 import { exec } from 'child_process'
 import { promisify } from 'util'
@@ -24,6 +24,10 @@ const argv = yargs(hideBin(process.argv))
     requiresArg: false,
     required: false,
   })
+  .help('help')
+  .alias('help', 'h')
+  .example('$0 -f /path/to/file.csv', 'Decrypt the specified file')
+  .example('$0 -f /path/to/file.csv -d', 'Decrypt the specified file and delete the source file')
   .parseSync()
 
 // Function to decrypt a file
