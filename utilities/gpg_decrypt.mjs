@@ -1,6 +1,6 @@
 // Encryption: gpg --batch --passphrase "$GPG_PASSWORD" --symmetric --cipher-algo AES256 <route_to_file>
 // *** remember to set the GPG_PASSWORD environment variable. Then export  GPG_PASSWORD
-// Decryption usage: node decrypt_gpg.mjs -f <route_to_file>
+// Decryption usage: node decrypt_gpg.mjs -f <route_to_file> [-d <bool_delete_source_file>]
 
 import { exec } from 'child_process'
 import { promisify } from 'util'
@@ -16,6 +16,13 @@ const argv = yargs(hideBin(process.argv))
     type: 'string',
     requiresArg: false,
     required: true,
+  })
+  .option('delete', {
+    alias: 'd',
+    describe: 'delete source file',
+    type: 'boolean',
+    requiresArg: false,
+    required: false,
   })
   .parseSync()
 
@@ -34,8 +41,12 @@ async function decryptFile(encryptedFilePath, outputFilePath) {
     // Run the command
     await execAsync(command)
     console.log(
-      `Decryption successful! Decrypted file saved to ${outputFilePath}`,
+      `Decryption successful -- Decrypted file saved to ${outputFilePath}`,
     )
+    if (argv.delete) {
+      await execAsync(`rm ${encryptedFilePath}`)
+      console.log('Encrypted source file deleted')
+    }
   } catch (error) {
     console.error('Error during decryption:', error.message)
   }
