@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Retraso administrativo</label>
+    <protected>false</protected>
+    <values>
+        <field>categoria__c</field>
+        <value xsi:type="xsd:string">Urgencia</value>
+    </values>
+    <values>
+        <field>nombreAlerta__c</field>
+        <value xsi:type="xsd:string">Retraso administrativo</value>
+    </values>
+    <values>
+        <field>tipo_alerta__c</field>
+        <value xsi:type="xsd:string">URG_02</value>
+    </values>
+</CustomMetadata>
