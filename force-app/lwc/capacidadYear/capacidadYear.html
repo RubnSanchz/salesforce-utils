@@ -1,0 +1,174 @@
+<!--
+  @class name        : capacidadYear
+  @description       : List of the years of capacities of the client.
+  @author            : Rubén Sánchez González
+  @created on        : 14-10-2024
+  @last modified on  : 17-12-2024
+  @last modified by  : Rubén Sánchez González
+-->
+<template>
+  <lightning-accordion allow-multiple-sections-open active-section-name="A" class="grayBackground">
+    <lightning-accordion-section name="A" label="Capacidades de Poliolefinas e Intermedios">
+
+      <template lwc:if={loading}>
+        <div style="text-align:center">
+          <lightning-spinner alternative-text="Loading" size="large" class="loading"></lightning-spinner>
+        </div>
+      </template>
+
+      <template lwc:else>
+        <template lwc:if={areCapacidades}>
+
+          <c-qutt_lwc_download-excel></c-qutt_lwc_download-excel>
+          <div class="container">
+            
+            <!-- Floating Buttons -->
+            <div class="floating-buttons">
+              <!-- button for web -->
+              <template if:false={isMobile}>
+                <lightning-button-icon
+                  title="Expandir todo"
+                  onclick={expandAll}
+                  icon-name="utility:expand_alt"
+                  variant="border-filled"
+                  class="slds-m-right_small"
+                ></lightning-button-icon>
+                <lightning-button-icon
+                  title="Contraer todo"
+                  onclick={collapseAll}
+                  icon-name="utility:contract_alt"
+                  variant="border-filled"
+                  class="slds-m-right_small"
+                ></lightning-button-icon>
+                <lightning-button
+                  label="Descarga a Excel"
+                  onclick={showExcelYearSelector}
+                  icon-name="utility:download"
+                  variant="brand-outline"
+                  class="slds-m-right_small"
+                ></lightning-button>
+              </template>
+              <!-- button for web and mobile -->
+              <lightning-button
+                label="Nueva capacidad"
+                onclick={handleNewClick}
+                icon-name="utility:add"
+                variant="brand-outline"
+                class="slds-m-right_small"
+              ></lightning-button>
+            </div>
+
+            <lightning-layout multiple-rows>
+              <!-- Layout of years -->
+              <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="2" padding="around-small" >
+                <lightning-vertical-navigation
+                  selected-item={initiallySelected}
+                  onselect={handleSelect}
+                >
+                  <template for:each={navigationData} for:item="section">
+                    <lightning-vertical-navigation-section
+                      key={section.label}
+                      label={section.label}
+                    >
+                      <template for:each={section.items} for:item="item">
+                        <lightning-vertical-navigation-item
+                          key={item.name}
+                          label={item.label}
+                          name={item.name}
+                        ></lightning-vertical-navigation-item>
+                      </template>
+                    </lightning-vertical-navigation-section>
+                  </template>
+                </lightning-vertical-navigation>
+              </lightning-layout-item>
+
+              <!-- Capacidades Tree LWC -->
+              <template if:true={loadedCapacidad}>
+                <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="10" padding="around-small" >
+                  <c-qufv_lwc_capacidad-tree
+                    year={currentContent}
+                    capacidades={capacidadesOfYear}
+                    onshowrecord={treeButtonPressed}
+                    grid-expanded-rows={persistExpanded}
+                  ></c-qufv_lwc_capacidad-tree>
+                </lightning-layout-item>
+              </template>
+            </lightning-layout>
+          </div>
+        </template>
+
+        <template lwc:else>
+          <p style="margin-bottom: 0.5%;">No existen capacidades registradas para este cliente</p>
+          <div class="container">
+            <lightning-button
+              label="Nueva capacidad"
+              onclick={handleNewClick}
+              icon-name="utility:add"
+              variant="brand-outline"
+              class="slds-m-right_small"
+            ></lightning-button>
+          </div>
+        </template>
+        
+      </template>
+    </lightning-accordion-section>
+  </lightning-accordion>
+
+  <template if:true={excelYearSelector}>
+    <!-- Modal/Popup Box LWC -->
+    <section role="alertdialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+          <!-- Modal header -->
+          <header class="slds-modal__header">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideExcelYearSelector}>
+                  <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small" ></lightning-icon>
+                  <span class="slds-assistive-text">Close</span>
+              </button>
+              <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Descarga a Excel de Capacidades</h2>
+          </header>
+          <!-- Modal content -->
+          <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+            <div class="slds-grid slds-gutters">
+              <div class="slds-col slds-size_1-of-3">
+                <lightning-checkbox-group
+                  label="Años de descarga de datos"
+                  data-name="valuesYears"
+                  name="valuesYears"
+                  options={sections}
+                  value={valuesYears}
+                  onchange={handleExcelSelector}>
+                </lightning-checkbox-group>
+              </div>
+              <div class="slds-col slds-size_1-of-3">
+                <lightning-checkbox-group
+                  label="Familias/ Productos a incluir"
+                  data-name="valuesFamilies"
+                  name="valuesFamilies"
+                  options={optionsFamilies}
+                  value={valuesFamilies}
+                  onchange={handleExcelSelector}>
+                </lightning-checkbox-group>
+              </div>
+              <div class="slds-col slds-size_1-of-3">
+                <lightning-helptext content="Se incluirá en una columna adicional aparte la capacidad del cliente cabecera separada 
+                de la capacidad de los SUMIs, para facilitar el sumado por columnas"></lightning-helptext>
+                <lightning-input 
+                  type="checkbox"
+                  label="Incluir datos de SUMI"
+                  name="includeSUMI"
+                  checked={includeSUMI}
+                  onchange={handleExcelCheck}>
+                </lightning-input>
+              </div>
+            </div>
+          </div>
+          <!-- Modal footer -->
+          <footer class="slds-modal__footer">
+            <lightning-button label="Cancelar" icon-name="utility:close" icon-position="left" class="slds-m-right_small" onclick={hideExcelYearSelector} ></lightning-button>
+            <lightning-button label="Descargar" icon-name="utility:download" variant="brand" class="slds-m-right_small" onclick={handleExcel} ></lightning-button>
+          </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>
