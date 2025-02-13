@@ -10,7 +10,7 @@ import { LightningElement, api, wire, track } from 'lwc'
 import { CurrentPageReference } from 'lightning/navigation'
 import { ShowToastEvent } from 'lightning/platformShowToastEvent'
 import gestorCuentaPermission from '@salesforce/customPermission/QUFV_cp_gestorCuenta'
-import getCapacidades from '@salesforce/apex/capacidad.getCapacidades'
+import getCapacidades from '@salesforce/apex/Capacidad.getCapacidades'
 import modalCapacidad from 'c/capacidadDetail'
 
 export default class CapacidadYears extends LightningElement {
