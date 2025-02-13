@@ -1,0 +1,32 @@
+:host {
+  --color-gray: var(--c-brandHeaderContrastWeak);
+  --color-blueSF: var(--c-brandPrimary);
+  --lwc-brandAccessible: var(--c-brandHeaderContrastWeak);
+}
+
+.lgc-bg {
+  background-color: #ecf4fe;
+}
+
+.lgc-bg-inverse {
+  background-color: rgb(22 50 92);
+}
+
+.gray {
+  color: var(--color-gray);
+}
+
+.blueSF {
+  color: var(--color-blueSF);
+}
+
+.slds-icon-eq__bar {
+  background-color: var(--color-gray);
+}
+
+.legend {
+  box-shadow: inset 4px 0 0 var(--lwc-brandPrimary, rgba(65, 148, 249, 1));
+  padding-left: 0.5rem;
+  margin-top: 0.5rem;
+  background: #ecf4fe;
+}
