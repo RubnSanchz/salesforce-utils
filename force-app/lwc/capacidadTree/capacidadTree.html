@@ -1,0 +1,79 @@
+<!--
+  @class name        : capacidadTree
+  @description       : Table of capacities for client for the given year.
+  @author            : Rubén Sánchez González
+  @created on        : 14-10-2024
+  @last modified on  : 13-12-2024
+  @last modified by  : Rubén Sánchez González
+-->
+<template>
+  <h2 class="slds-text-heading_medium slds-m-bottom_medium">
+    <p>Capacidades del año <b>{year}</b></p>
+  </h2>
+
+  <!-- Info Section -->
+  <template lwc:if={isCurrentYear}>
+    <div class="slds-grid slds-grid_align-left gray">
+      <lightning-dynamic-icon
+        type="eq"
+        option="play"
+        alternative-text="Recording in progress"
+      >
+      </lightning-dynamic-icon>
+      <span class="slds-form-element__help slds-m-left_x-small">
+        Las ventas facturadas del año consultado no están consolidadas. Los
+        cálculos de venta y cuotas están ajustados a la situación actual del año
+        en curso.
+      </span>
+    </div>
+  </template>
+
+  <!-- Legend Section -->
+  <div class="legend">
+    <div class="slds-grid slds-grid_align-left">
+      <lightning-helptext
+        icon-name={capacityIcon}
+        content="Capacidad de compra total que se haya incluido para el Cabecera de grupo o Solicitante. No agrega automáticamente las capacidades de los SUMIs."
+      ></lightning-helptext>
+      <span class="slds-form-element__help slds-m-left_x-small">
+        : <b> Capacidad </b> de compra de la cabecera de grupo
+      </span>
+    </div>
+    <div class="slds-grid slds-grid_align-left">
+      <lightning-helptext
+        icon-name={salesIcon}
+        content="Ventas facturadas para el cliente, independientemente de que se haya incluido un SUMI para esta o no. Las ventas se facturan en SAP a 2 meses vista."
+      ></lightning-helptext>
+      <span class="slds-form-element__help slds-m-left_x-small">
+        : <b>Ventas consolidadas totales</b> para el cliente, incluyendo el
+        solicitante y todos sus SUMIs
+      </span>
+    </div>
+  </div>
+
+  <!-- Tree Grid Section -->
+  <div class="slds-p-top_small">
+    <template lwc:if={isMobile}>
+      <lightning-datatable
+        key-field="key"
+        columns={gridColumns}
+        data={datatableData}
+        onrowaction={handleRowAction}
+        min-column-width="100"
+        hide-checkbox-column
+      ></lightning-datatable>
+    </template>
+
+    <template lwc:else>
+      <lightning-tree-grid
+        columns={gridColumns}
+        data={gridData}
+        expanded-rows={gridExpandedRows}
+        key-field="key"
+        onrowaction={handleRowAction}
+        min-column-width="100"
+        hide-checkbox-column
+      ></lightning-tree-grid>
+    </template>
+  </div>
+</template>
