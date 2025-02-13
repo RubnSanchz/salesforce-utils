@@ -1,0 +1,375 @@
+<!--
+  @class name        : capacidadDetail
+  @description       : Layout for detail and edit of a capacity.
+  @author            : Rubén Sánchez González
+  @created on        : 17-10-2024
+  @last modified on  : 18-12-2024
+  @last modified by  : Rubén Sánchez González
+-->
+<template>
+  <template lwc:if={loading}>
+    <div style="text-align:center">
+      <lightning-spinner alternative-text="Loading" size="large" class="loading"></lightning-spinner>
+    </div>
+  </template>
+  
+  <template lwc:else>
+
+    <!-- Commonor all modals -->
+    <lightning-modal-header label={labelHeader}></lightning-modal-header>
+
+    <!-- Modal for view existing capacity details -->
+    <template lwc:if={_isViewing}>
+  
+      <lightning-modal-body>
+        <lightning-record-view-form record-id={capacidadId} object-api-name="QUFV_obj_capacidad__c" >
+          <div class="slds-box slds-m-around_xx-small slds-theme_default">
+            <lightning-layout multiple-rows>
+              <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6" padding="around-small" >
+                <lightning-output-field field-name="Name">
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_account__c">
+                </lightning-output-field>
+                <lightning-output-field field-name="RecordTypeId">
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_family__c">
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_year__c">
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_country__c">
+                </lightning-output-field>
+              </lightning-layout-item>
+  
+              <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6" padding="around-small" >
+                <lightning-output-field field-name="QUFV_fld_consolidatedSales__c" >
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_anualConsumption__c">
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_cuota__c">
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_competitors__c">
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_lastModifiedDate__c">
+                </lightning-output-field>
+                <lightning-output-field field-name="QUFV_fld_comments__c">
+                </lightning-output-field>
+              </lightning-layout-item>
+            </lightning-layout>
+          </div>
+        </lightning-record-view-form>
+      </lightning-modal-body>
+    </template>
+  
+    <!-- Modal for editing existing capacity -->
+    <template lwc:elseif={_isEditing}>
+
+      <lightning-modal-body>            
+        <div class="slds-box slds-m-around_xx-small slds-theme_default">
+          <lightning-record-view-form record-id={capacidadId} object-api-name="QUFV_obj_capacidad__c" >
+            <lightning-layout multiple-rows>
+              <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6" padding="around-small" >
+  
+                  <lightning-output-field field-name="Name">
+                  </lightning-output-field>
+                  <lightning-output-field field-name="QUFV_fld_account__c">
+                  </lightning-output-field>
+                  <lightning-output-field field-name="RecordTypeId">
+                  </lightning-output-field>
+                  <lightning-output-field field-name="QUFV_fld_family__c">
+                  </lightning-output-field>
+                  <lightning-output-field field-name="QUFV_fld_year__c">
+                  </lightning-output-field>
+                  <lightning-output-field field-name="QUFV_fld_country__c">
+                  </lightning-output-field>
+                
+              </lightning-layout-item>
+  
+              <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6" padding="around-small" >
+  
+                  <lightning-output-field field-name="QUFV_fld_consolidatedSales__c" >
+                  </lightning-output-field>
+  
+                  <abbr title="required" class="slds-required">*</abbr>
+                  <label class="slds-form-element__label">Capacidad de compra anual</label>
+                  <lightning-input
+                    name="consumo"
+                    data-name="consumo"
+                    type="number"
+                    step="0.001"
+                    class="custom-input"
+                    variant="label-hidden"
+                    placeholder="Capacidad de compra en toneladas. Decimales separados por coma (hasta 3 decimales)"
+                    onchange={changeDefault}
+                    onkeydown={avoidLetters}
+                    value={consumo}
+                    required
+                  ></lightning-input>
+  
+                  <label class="slds-form-element__label">Competidores</label>
+                  <lightning-input
+                    name="competidores"
+                    data-name="competidores"
+                    type="text"
+                    class="custom-input"
+                    variant="label-hidden"
+                    placeholder="Nombre de competidores, preferiblemente separados por comas"
+                    onchange={changeDefault}
+                    value={competidores}
+                  ></lightning-input>
+  
+                  <abbr title="required" class="slds-required">*</abbr>
+                  <label class="slds-form-element__label">Fecha actualización dato</label>
+                  <lightning-input
+                    name="fechaDato"
+                    data-name="fechaDato"
+                    type="date"
+                    class="custom-input"
+                    variant="label-hidden"
+                    placeholder="Cuándo se toma el dato de consumo"
+                    onchange={changeDefault}
+                    value={fechaDato}
+                    required
+                  ></lightning-input>
+  
+                  <label class="slds-form-element__label">Comentarios</label>
+                  <lightning-input
+                    name="comentarios"
+                    data-name="comentarios"
+                    type="text"
+                    class="custom-input"
+                    variant="label-hidden"
+                    placeholder="Información adicional relevante"
+                    value={comentarios}
+                    max-length="100000"
+                    onchange={changeDefault}
+                  ></lightning-input>
+                
+              </lightning-layout-item>
+              
+            </lightning-layout>
+          </lightning-record-view-form>
+        </div>
+      </lightning-modal-body>
+    </template>
+
+    <!-- Modal for deleting row -->
+    <template lwc:elseif={_isDeleting}>
+      <lightning-modal-body class="slds-text-align_center">
+        <template lwc:if={missingRecord}>
+          <p>No existe datos de capacidad para el solicitante que pueda borrar. No obstante, sigue mostrándose este registro en la tabla para 
+            agregar los datos de destinatario de mercancías para la familia y años existentes.</p>
+          <p>Si desea borrar todo el registro, elimine los datos de los destinatarios o bien pulse en 'Borrar datos familia'.</p>
+        </template>
+        <template lwc:else>
+          <p>¿Está seguro que desea eliminar este registro?</p>
+          <p>Si está eliminando datos del cliente cabecera esta fila no desaparecerá si tiene datos de destinatarios de mercancías para la familia y año seleccionados.</p>
+          <p><b>La acción será irreversible.</b></p>
+        </template>
+      </lightning-modal-body>
+    </template>
+
+    <!-- Modal for deleting all client-year-family info -->
+    <template lwc:elseif={_isDeletingAll}>
+      <lightning-modal-body class="slds-text-align_center">
+          <p>¿Está seguro que desea eliminar todos los registros del cliente para el año y familia seleccionados?</p>
+          <p>La acción será irreversible.</p>
+      </lightning-modal-body>
+    </template>
+
+    <!-- Modal for new capacity -->
+    <template lwc:elseif={_isCreating}>
+
+      <lightning-modal-body>
+        <div class="slds-box slds-m-around_xx-small slds-theme_shade">
+          <p>
+            Si introduce un dato con el mismo cliente, familia y año que una
+            capacidad existente, actualizará el dato existente en vez de crear uno
+            nuevo
+          </p>
+        </div>
+        <lightning-layout multiple-rows>
+          <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6" padding="around-small" >
+            
+            <lightning-record-picker
+              name="_cliente"
+              data-name="_cliente"
+              label="Cliente o SUMI"
+              placeholder="Buscar por nombre o código. Debe ser SUMI de la cuenta que se está visitando."
+              object-api-name="Account"
+              value={_cliente}
+              onchange={changeRecordPicker}
+              display-info={displayInfo}
+              matching-info={matchingInfo}
+              filter={filter}
+              disabled={disableCliente}
+              required
+            >
+            </lightning-record-picker>
+
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Familia</label>
+            <lightning-combobox
+              name="_familia"
+              data-name="_familia"
+              class="custom-input"
+              variant="label-hidden"
+              type="text"
+              placeholder="Seleccionar opción"
+              onchange={changeDefault}
+              options={optionsFamilia}
+              value={_familia}
+              required
+            ></lightning-combobox>
+
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Año</label>
+            <lightning-input
+              name="_year"
+              data-name="_year"
+              type="number"
+              step="1"
+              class="custom-input"
+              variant="label-hidden"
+              placeholder="Año al que aplica el dato"
+              value={_year}
+              max="2099"
+              min="2000"
+              onchange={changeDefault}
+              onkeydown={avoidLetters}
+              required
+            ></lightning-input>
+
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Capacidad de compra estimado</label>
+            <lightning-input
+              name="consumo"
+              data-name="consumo"
+              type="number"
+              step="0.001"
+              class="custom-input"
+              variant="label-hidden"
+              placeholder="Capacidad de compra en toneladas. Decimales separados por coma (hasta 3 decimales)"
+              value={consumo}
+              onchange={changeDefault}
+              onkeydown={avoidLetters}
+              required
+            ></lightning-input>
+          
+        </lightning-layout-item>
+
+        <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6" padding="around-small" >
+
+            <label class="slds-form-element__label">Competidores</label>
+            <lightning-input
+              name="competidores"
+              data-name="competidores"
+              type="text"
+              class="custom-input"
+              variant="label-hidden"
+              placeholder="Nombre de competidores, preferiblemente separados por comas"
+              onchange={changeDefault}
+              value={competidores}
+            ></lightning-input>
+
+            <abbr title="required" class="slds-required">*</abbr>
+            <label class="slds-form-element__label">Fecha revisión dato</label>
+            <lightning-input
+              name="fechaDato"
+              data-name="fechaDato"
+              type="date"
+              class="custom-input"
+              variant="label-hidden"
+              placeholder="Cuándo se toma el dato de consumo"
+              onchange={changeDefault}
+              value={fechaDato}
+              required
+            ></lightning-input>
+
+            <label class="slds-form-element__label">Comentarios</label>
+            <lightning-input
+              name="comentarios"
+              data-name="comentarios"
+              type="text"
+              class="custom-input"
+              variant="label-hidden"
+              placeholder="Información adicional relevante"
+              value={comentarios}
+              max-length="100000"
+              onchange={changeDefault}
+            ></lightning-input>
+            
+          </lightning-layout-item>
+        </lightning-layout>
+      </lightning-modal-body>
+
+    </template>
+    
+    <!-- Common footer for all  -->
+    <lightning-modal-footer>
+      <div class="slds-grid slds-grid_align-end">
+        <lightning-button
+          label="Cancelar"
+          icon-name="utility:close"
+          icon-position="left"
+          class="slds-m-right_small"
+          onclick={handleCloseClick}
+        ></lightning-button>
+
+        <template lwc:if={_isViewing}>
+          <lightning-button
+            label="Editar"
+            icon-name="utility:edit"
+            icon-position="left"
+            class="slds-m-right_small"
+            variant="brand"
+            onclick={handleEdit}
+          ></lightning-button>
+        </template>
+
+        <template lwc:elseif={_isEditing}>
+          <lightning-button
+            label="Guardar"
+            icon-name="utility:save"
+            icon-position="left"
+            variant="brand"
+            onclick={handleSave}
+          ></lightning-button>
+        </template>
+
+        <template lwc:elseif={_isDeleting}>
+          <lightning-button
+            label="Eliminar"
+            icon-name="utility:delete"
+            icon-position="left"
+            variant="destructive"
+            onclick={handleDelete}
+            disabled={missingRecord}
+          ></lightning-button>
+        </template>
+
+        <template lwc:elseif={_isDeletingAll}>
+          <lightning-button
+            label={labelDelete}
+            icon-name="utility:delete"
+            icon-position="left"
+            variant="destructive"
+            onclick={handleDelete}
+          ></lightning-button>
+        </template>
+
+        <template lwc:elseif={_isCreating}>
+          <lightning-button
+            label={labelNew}
+            icon-name="utility:add"
+            icon-position="left"
+            variant="brand"
+            onclick={handleSave}
+          ></lightning-button>
+        </template>
+
+      </div>
+  
+    </lightning-modal-footer>
+
+  </template>
+</template>
