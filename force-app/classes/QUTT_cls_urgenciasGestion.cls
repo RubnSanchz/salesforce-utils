@@ -69,8 +69,8 @@ public with sharing class QUTT_cls_urgenciasGestion {
 				!Asset.sObjectType.getDescribe().isUpdateable() ||
 				!QUSAC_obj_tarea__c.sObjectType.getDescribe().isCreateable()
 			) {
-				throw new QUTT_cls_excepction.PermissionException(
-					QUTT_cls_excepction.UNNACCESIBLE +
+				throw new CustomExcepction.PermissionException(
+					CustomExcepction.UNNACCESIBLE +
 						RQO_obj_posiciondeEntrega__c.sObjectType.getDescribe().getName() +
 						' ' +
 						Asset.sObjectType.getDescribe().getName() +
@@ -183,7 +183,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 	private static void checkZPM(List<Asset> posPedidos) {
 		for (Asset posPedido : posPedidos) {
 			if (posPedido.RQO_fld_idRelacion__r.RQO_fld_tipodePedido__c == ZPM) {
-				throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_1);
+				throw new CustomExcepction.UnhandledException(EXCEPTION_1);
 			}
 		}
 		System.debug(CLASS_NAME + ' - Not ZPM');
@@ -212,7 +212,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 			}
 
 			if (!isValid) {
-				throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_2);
+				throw new CustomExcepction.UnhandledException(EXCEPTION_2);
 			}
 		}
 		System.debug(CLASS_NAME + ' - Assignable to Tte Terrestre');
@@ -238,7 +238,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 			Boolean cond3 = agrupacion == null;
 
 			if (cond1 && (cond2 || cond3)) {
-				throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_3);
+				throw new CustomExcepction.UnhandledException(EXCEPTION_3);
 			}
 		}
 		System.debug(CLASS_NAME + ' - All same delivery number or group number');
@@ -257,7 +257,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 		if (posEntregas.isEmpty() && posPedidos.size() > 1) {
 			for (Asset posPedido : posPedidos) {
 				if (posPedido.RQO_fld_idRelacion__r.QUSAC_fld_condicionExpedicion__c != AGRUPACION_CODE) {
-					throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_4);
+					throw new CustomExcepction.UnhandledException(EXCEPTION_4);
 				}
 			}
 		}
@@ -276,7 +276,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 	private static void checkBlockDelivery(List<Asset> posPedidos) {
 		for (Asset posPedido : posPedidos) {
 			if (posPedido.RQO_fld_idRelacion__r.QUFV_fld_bloqueo__c != null) {
-				throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_5);
+				throw new CustomExcepction.UnhandledException(EXCEPTION_5);
 			}
 		}
 		System.debug(CLASS_NAME + ' - Any with block');
@@ -293,7 +293,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 		for (RQO_obj_posiciondeEntrega__c posEntrega : posEntregas) {
 			String incoterm = posEntrega.RQO_fld_posicionPedido__r.RQO_fld_idRelacion__r.RQO_fld_incoterm__c;
 			if (QUTT_cls_constantes.INCOTERM_EXCLUDED.contains(incoterm)) {
-				throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_6 + incoterm);
+				throw new CustomExcepction.UnhandledException(EXCEPTION_6 + incoterm);
 			}
 		}
 		System.debug(CLASS_NAME + ' - All have valid Incoterms');
@@ -310,7 +310,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 		for (RQO_obj_posiciondeEntrega__c posEntrega : posEntregas) {
 			String transportista = posEntrega.RQO_fld_idRelacion__r.QUTT_fld_codigoTransportista__r.RQO_fld_idExterno__c;
 			if (QUTT_cls_constantes.TRANSPORT_EXCLUDED.contains(transportista)) {
-				throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_7 + transportista);
+				throw new CustomExcepction.UnhandledException(EXCEPTION_7 + transportista);
 			}
 		}
 		System.debug(CLASS_NAME + ' - All have valid Transporters');
@@ -326,7 +326,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 	private static void checkNotDelivered(List<RQO_obj_posiciondeEntrega__c> posEntregas) {
 		for (RQO_obj_posiciondeEntrega__c posEntrega : posEntregas) {
 			if (posEntrega.RQO_fld_idRelacion__r.RQO_fld_fechaRealdeLlegada__c != null) {
-				throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_8);
+				throw new CustomExcepction.UnhandledException(EXCEPTION_8);
 			}
 		}
 		System.debug(CLASS_NAME + ' - Any delivered yet');
@@ -346,7 +346,7 @@ public with sharing class QUTT_cls_urgenciasGestion {
 		};
 		for (Asset posPedido : posPedidos) {
 			if (onGoingStatus.contains(posPedido.QUTT_fld_solicitud__r.QUTT_fld_estadoSolicitud__c)) {
-				throw new QUTT_cls_excepction.UnhandledException(EXCEPTION_9);
+				throw new CustomExcepction.UnhandledException(EXCEPTION_9);
 			}
 		}
 		System.debug(CLASS_NAME + ' - Not exists urgency request');
@@ -381,8 +381,8 @@ public with sharing class QUTT_cls_urgenciasGestion {
 				!QUTT_obj_solicitud__c.sObjectType.getDescribe().isAccessible() ||
 				!QUTT_obj_agrupadorSolicitudes__c.sObjectType.getDescribe().isCreateable()
 			) {
-				throw new QUTT_cls_excepction.PermissionException(
-					QUTT_cls_excepction.UNNACCESIBLE + QUTT_obj_solicitud__c.sObjectType.getDescribe().getName()
+				throw new CustomExcepction.PermissionException(
+					CustomExcepction.UNNACCESIBLE + QUTT_obj_solicitud__c.sObjectType.getDescribe().getName()
 				);
 			}
 
@@ -515,8 +515,8 @@ public with sharing class QUTT_cls_urgenciasGestion {
 			new List<String>{ QUSAC_cls_constantes.ROL_GESTOR_MATERIAL }
 		);
 		if (!User.sObjectType.getDescribe().isAccessible()) {
-			throw new QUTT_cls_excepction.PermissionException(
-				QUTT_cls_excepction.UNNACCESIBLE + User.sObjectType.getDescribe().getName()
+			throw new CustomExcepction.PermissionException(
+				CustomExcepction.UNNACCESIBLE + User.sObjectType.getDescribe().getName()
 			);
 		}
 		for (User user : [
@@ -590,8 +590,8 @@ public with sharing class QUTT_cls_urgenciasGestion {
 		);
 
 		if (!QUSAC_obj_tarea__c.sObjectType.getDescribe().isCreateable()) {
-			throw new QUTT_cls_excepction.PermissionException(
-				QUTT_cls_excepction.UNNACCESIBLE + QUSAC_obj_tarea__c.sObjectType.getDescribe().getName()
+			throw new CustomExcepction.PermissionException(
+				CustomExcepction.UNNACCESIBLE + QUSAC_obj_tarea__c.sObjectType.getDescribe().getName()
 			);
 		}
 		insert tareaURG;
@@ -627,8 +627,8 @@ public with sharing class QUTT_cls_urgenciasGestion {
 			String texto = TEXTO_DEFAULT;
 			Boolean changeText = true;
 			if (!QUTT_obj_agrupadorSolicitudes__c.sObjectType.getDescribe().isAccessible()) {
-				throw new QUTT_cls_excepction.PermissionException(
-					QUTT_cls_excepction.UNNACCESIBLE +
+				throw new CustomExcepction.PermissionException(
+					CustomExcepction.UNNACCESIBLE +
 					QUTT_obj_agrupadorSolicitudes__c.sObjectType.getDescribe().getName()
 				);
 			}
