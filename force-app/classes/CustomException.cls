@@ -1,13 +1,30 @@
 /**
  * @name              : CustomExcepction
- * @description       : Clase de excepciones custom para el proyecto CP SVA
+ * @description       : Clase de excepciones custom para el proyecto
  * @author            : Rubén Sánchez González
- * @last modified on  : 21-03-2024
+ * @last modified on  : 14-05-2025
  * @last modified by  : Rubén Sánchez González
  **/
 public with sharing class CustomExcepction {
     public final static String EXCEPTION_MSG = 'Ha ocurrido un error inesperado. Por favor, contacte con el administrador del sistema.';
     public final static String UNNACCESIBLE = 'Sin permiso sobre el objeto indicado: ';
+
+    /**
+    * @description Nebula Logger register
+    * @author Rubén Sánchez González | 14-05-2025
+    * @param Exception
+    * @param String
+    **/
+    public static void logException(Exception cause) {
+        logException(cause, '');
+    }
+    public static void logException(String message) {
+        logException(null, message);
+    }
+    public static void logException(Exception cause, String message) {
+        Logger.error('ASG Exception: ' + message, cause);
+        Logger.saveLog();
+    }
 
     /**
      * @name       : IntegrationException
