@@ -3,7 +3,7 @@
  * @description       : Clase de excepciones custom para el proyecto
  * @author            : Rubén Sánchez González
  * @last modified on  : 14-05-2025
- * @last modified by  : Rubén Sánchez González
+ * @last modified by  : Inetum Team <ruben.sanchez-gonzalez@inetum.com>
  **/
 public with sharing class CustomExcepction {
     public final static String EXCEPTION_MSG = 'Ha ocurrido un error inesperado. Por favor, contacte con el administrador del sistema.';
@@ -22,7 +22,7 @@ public with sharing class CustomExcepction {
         logException(null, message);
     }
     public static void logException(Exception cause, String message) {
-        Logger.error('ASG Exception: ' + message, cause);
+        Logger.error('Exception: ' + message, cause);
         Logger.saveLog();
     }
 
