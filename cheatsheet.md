@@ -31,7 +31,7 @@ sfdx force:auth:device:login --setalias [org-alias] --instanceurl [org-url] --se
 6. En nuestro terminal, ejecutamos:
 
    ```bash
-   sfdx auth jwt grant --username [username_del_usuario_a_logar] --client-id [client_id_del_user_entre_comillas] --jwt-key-file [fichero_serverkey_generado] --instance-url https://login.salesforce.com -a [alias]sfdx auth jwt grant --username ***REDACTED*** --client-id '***REDACTED***' --jwt-key-file server.key --instance-url https://login.salesforce.com -a [org-alias]-CPSVA-int
+   sfdx auth jwt grant --username [username_del_usuario_a_logar] --client-id [client_id_del_user_entre_comillas] --jwt-key-file [fichero_serverkey_generado] --instance-url https://login.salesforce.com -a [org-alias]
    ```
 
 <br>
@@ -49,14 +49,14 @@ git remote -v
 Devolverá datos del tipo:
 
 ```bash
-> origin  https://[ username ]:***REDACTED***@[ ... repository ] (fetch)
-> origin  https://[ username ]:***REDACTED***@[ ... repository ] (push)
+> origin  https://[ username ]:[ token ]@[ ... repository ] (fetch)
+> origin  https://[ username ]:[ token ]@[ ... repository ] (push)
 ```
 
 Cambiamos token. Lo generamos desde Azure desde [User Settings → Personal Access Tokens](https://[...]-digital-team.visualstudio.com/_usersSettings/tokens)
 
 ```bash
-> git remote set-url origin https://[ username ]:***REDACTED***@[ ... repository ]
+> git remote set-url origin https://[ username ]:[ token ]@[ ... repository ]
 
 git fetch
 ```
@@ -66,5 +66,5 @@ Para ‘hardcodear’ el token en git y evitar que nos lo pida cada vez
 Tomamos la salida y modificamos para incluir el token en medio
 
 ```bash
-git remote set-url origin https://[ username ]:***REDACTED***@[ ... repository ]
+git remote set-url origin https://[ username ]:[ token ]@[ ... repository ]
 ```
