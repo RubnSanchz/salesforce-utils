@@ -5,13 +5,13 @@
 ### Login into org
 
 ```bash
-sfdx org open --target-org cliente--prod --url-only
+sfdx org open --target-org [org-alias] --url-only
 ```
 
 ### Authorize someone with my credentials
 
 ```bash
-sfdx force:auth:device:login --setalias cliente--prod --instanceurl https://cliente.my.salesforce.com --setdefaultusername
+sfdx force:auth:device:login --setalias [org-alias] --instanceurl [org-url] --setdefaultusername
 ```
 
 > Lo ejecuta quien quiera darle acceso y yo. Le pido que me pase el código, y con mis credenciales y ese código me logueo en el entorno
@@ -31,7 +31,7 @@ sfdx force:auth:device:login --setalias cliente--prod --instanceurl https://clie
 6. En nuestro terminal, ejecutamos:
 
    ```bash
-   sfdx auth jwt grant --username [username_del_usuario_a_logar] --client-id [client_id_del_user_entre_comillas] --jwt-key-file [fichero_serverkey_generado] --instance-url https://login.salesforce.com -a [alias]sfdx auth jwt grant --username ***REDACTED*** --client-id '***REDACTED***' --jwt-key-file server.key --instance-url https://login.salesforce.com -a cliente--prod-CPSVA-int
+   sfdx auth jwt grant --username [username_del_usuario_a_logar] --client-id [client_id_del_user_entre_comillas] --jwt-key-file [fichero_serverkey_generado] --instance-url https://login.salesforce.com -a [alias]sfdx auth jwt grant --username ***REDACTED*** --client-id '***REDACTED***' --jwt-key-file server.key --instance-url https://login.salesforce.com -a [org-alias]-CPSVA-int
    ```
 
 <br>
@@ -49,14 +49,14 @@ git remote -v
 Devolverá datos del tipo:
 
 ```bash
-> origin  https://ruben.sanchez.g:***REDACTED***@cliente-digital-team.visualstudio.com/Salesforce/_git/AP_SALESFORCE (fetch)
-> origin  https://ruben.sanchez.g:***REDACTED***@cliente-digital-team.visualstudio.com/Salesforce/_git/AP_SALESFORCE (push)
+> origin  https://[ username ]:***REDACTED***@[ ... repository ] (fetch)
+> origin  https://[ username ]:***REDACTED***@[ ... repository ] (push)
 ```
 
-Cambiamos token. Lo generamos desde Azure desde [User Settings → Personal Access Tokens](https://cliente-digital-team.visualstudio.com/_usersSettings/tokens)
+Cambiamos token. Lo generamos desde Azure desde [User Settings → Personal Access Tokens](https://[...]-digital-team.visualstudio.com/_usersSettings/tokens)
 
 ```bash
-> git remote set-url origin https://ruben.sanchez.g:***REDACTED***@cliente-digital-team.visualstudio.com/Salesforce/_git/AP_SALESFORCE
+> git remote set-url origin https://[ username ]:***REDACTED***@[ ... repository ]
 
 git fetch
 ```
@@ -66,5 +66,5 @@ Para ‘hardcodear’ el token en git y evitar que nos lo pida cada vez
 Tomamos la salida y modificamos para incluir el token en medio
 
 ```bash
-git remote set-url origin https://ruben.sanchez.g:***REDACTED***@cliente-digital-team.visualstudio.com/Salesforce/_git/AP_SALESFORCE
+git remote set-url origin https://[ username ]:***REDACTED***@[ ... repository ]
 ```
